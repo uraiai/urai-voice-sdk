@@ -30,6 +30,7 @@ export type {
   AgentInfo,
   AudioLevels,
   CallStatus,
+  EndReason,
   ComponentItem,
   MessageItem,
   Notice,

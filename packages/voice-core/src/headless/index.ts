@@ -9,6 +9,7 @@ export {
   type AgentInfo,
   type AudioLevels,
   type CallStatus,
+  type EndReason,
   type ComponentItem,
   type MessageItem,
   type Notice,

@@ -19,7 +19,8 @@ export type VoiceServerEvent =
   | { type: "call-started"; callSid: string; agentId: string; agentName: string }
   | { type: "client-tool-call"; callId: string; name: string; arguments: unknown }
   | { type: "final-transcripts"; transcripts: FinalTranscript[] }
-  | { type: "usage"; stats: Record<string, unknown> };
+  | { type: "usage"; stats: Record<string, unknown> }
+  | { type: "call-ended"; reason: string };
 
 export function toVoiceEvent(msg: ServerMessage): VoiceServerEvent | null {
   switch (msg.type) {
@@ -86,6 +87,8 @@ export function toVoiceEvent(msg: ServerMessage): VoiceServerEvent | null {
       return { type: "final-transcripts", transcripts: msg.transcripts };
     case "usageStats":
       return { type: "usage", stats: msg.stats };
+    case "callEnded":
+      return { type: "call-ended", reason: msg.reason };
     default:
       return null;
   }

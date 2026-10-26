@@ -8,7 +8,7 @@ from server-side tools (including `displayComponent`) reach your handlers.
 | Package | What it is |
 |---|---|
 | [`@uraiai/voice-core`](packages/voice-core) | Framework-agnostic engine (`createVoiceClient`), plus `/headless` for the DOM-free store, timeline and tool registry |
-| `@uraiai/voice-react` | React hooks and a modular inline UI *(coming next)* |
+| [`@uraiai/voice-react`](packages/voice-react) | React provider and hooks (a modular inline UI comes next) |
 
 ## Before you start: allow your origin
 
@@ -50,6 +50,12 @@ button.onclick = () => voice.start(); // from a user gesture, so audio can play
 ```
 
 See the [core README](packages/voice-core) for the full API.
+
+## Example app
+
+`examples/react-demo` (port 5180) is a small store page that an agent drives
+through client tools, with a raw event log. Use it to try the SDK against a
+local urai-voice server; the [README](examples/react-demo) covers setup.
 
 ## Development
 

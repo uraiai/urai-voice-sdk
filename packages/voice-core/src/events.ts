@@ -1,5 +1,5 @@
 import type { FinalTranscript } from "./protocol";
-import type { AgentInfo, CallStatus, SpeakerRole } from "./headless/types";
+import type { AgentInfo, CallStatus, EndReason, SpeakerRole } from "./headless/types";
 
 export interface VoiceEventMap {
   status: { status: CallStatus; error: string | null };
@@ -18,7 +18,7 @@ export interface VoiceEventMap {
   "final-transcripts": { transcripts: FinalTranscript[] };
   usage: { stats: Record<string, unknown> };
   error: { message: string };
-  ended: { error: string | null };
+  ended: { reason: EndReason; error: string | null };
 }
 
 export type VoiceEventName = keyof VoiceEventMap;

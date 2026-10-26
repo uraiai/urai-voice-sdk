@@ -22,6 +22,13 @@ export default defineConfig({
           include: ["packages/voice-core/tests/*.test.ts"],
         },
       },
+      {
+        test: {
+          name: "react",
+          environment: "jsdom",
+          include: ["packages/voice-react/tests/**/*.test.{ts,tsx}"],
+        },
+      },
     ],
   },
 });

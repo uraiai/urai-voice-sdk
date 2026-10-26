@@ -90,7 +90,9 @@ export type ServerMessage =
   /** Protocol 1. */
   | { type: "command"; command: unknown }
   /** Protocol 1. */
-  | { type: "clientToolCall"; callId: string; name: string; arguments: unknown };
+  | { type: "clientToolCall"; callId: string; name: string; arguments: unknown }
+  /** Protocol 1: the server is ending the call; the socket closes next. */
+  | { type: "callEnded"; reason: string };
 
 export function parseServerMessage(data: unknown): ServerMessage | null {
   if (typeof data !== "string") return null;

@@ -1,0 +1,91 @@
+:root {
+  --bg: #f7f7f5;
+  --panel: #ffffff;
+  --text: #1c1c1a;
+  --muted: #6b6b66;
+  --line: #e4e3df;
+  --accent: #2f6fdd;
+  --danger: #c43d3d;
+  --ok: #2f8a4f;
+  --flash: #fff1b8;
+  color-scheme: light dark;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615;
+    --panel: #1f1f1d;
+    --text: #ecebe7;
+    --muted: #9b9a94;
+    --line: #34332f;
+    --accent: #6b9cf0;
+    --danger: #e06a6a;
+    --ok: #5cbf7e;
+    --flash: #4a4220;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); }
+button, input, select { font: inherit; color: inherit; }
+button {
+  border: 1px solid var(--line); background: var(--panel); border-radius: 6px;
+  padding: 6px 12px; cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+input, select { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 6px 8px; }
+code { font-size: 12px; }
+.muted { color: var(--muted); }
+.error { color: var(--danger); margin: 0; }
+
+.setup { max-width: 560px; margin: 80px auto; padding: 0 16px; }
+
+.layout { display: grid; grid-template-columns: 1fr 400px; gap: 16px; padding: 16px; min-height: 100vh; }
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+.store, .voice { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.store-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.store-header h1 { margin: 0; font-size: 20px; }
+.customer { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+.tabs { display: flex; gap: 6px; margin: 16px 0; }
+.tabs button { text-transform: capitalize; }
+.tabs button.active { border-color: var(--accent); color: var(--accent); }
+.filter { display: flex; gap: 8px; align-items: center; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.product { border: 1px solid var(--line); border-radius: 8px; padding: 12px; transition: background 0.4s; }
+.product h3 { margin: 0 0 6px; font-size: 15px; }
+.product p { margin: 0 0 12px; color: var(--muted); font-size: 13px; }
+.product footer { display: flex; justify-content: space-between; align-items: center; }
+.product.flash { background: var(--flash); }
+.list { display: flex; flex-direction: column; gap: 8px; }
+.row { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding: 8px 0; }
+
+.voice { display: flex; flex-direction: column; gap: 12px; position: sticky; top: 16px; max-height: calc(100vh - 32px); }
+.voice-head { display: flex; gap: 8px; align-items: center; }
+.status { padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); }
+.status-connected { color: var(--ok); border-color: var(--ok); }
+.status-error { color: var(--danger); border-color: var(--danger); }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.levels { display: grid; gap: 4px; }
+.meter { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar div { height: 100%; background: var(--accent); transition: width 60ms linear; }
+
+.timeline { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; min-height: 160px; }
+.msg { padding: 8px 10px; border-radius: 8px; max-width: 90%; line-height: 1.4; }
+.msg-user { align-self: flex-end; background: var(--accent); color: #fff; }
+.msg-agent { align-self: flex-start; background: var(--bg); }
+.msg.interim { opacity: 0.6; }
+.tool { font-size: 12px; color: var(--muted); }
+.tool-failed { color: var(--danger); }
+.notice { font-size: 12px; text-align: center; color: var(--muted); }
+.card { border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 4px; }
+.badge { font-size: 11px; border: 1px solid var(--line); border-radius: 999px; padding: 1px 6px; }
+.composer { display: flex; gap: 6px; }
+.composer input { flex: 1; }
+
+.events { font-size: 12px; }
+.events ol { max-height: 200px; overflow: auto; padding-left: 18px; margin: 6px 0 0; }
+.events code { word-break: break-all; }

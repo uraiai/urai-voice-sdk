@@ -16,6 +16,15 @@ export type CallStatus =
 
 export type SpeakerRole = "user" | "agent";
 
+/**
+ * Why the last call ended:
+ * - `user` — the page called `end()`
+ * - `agent` — the agent hung up (after its last words played)
+ * - `disconnected` — the connection dropped without a reason
+ * - `error` — the call failed; see `error`
+ */
+export type EndReason = "user" | "agent" | "disconnected" | "error";
+
 export interface MessageItem {
   kind: "message";
   id: string;
@@ -78,6 +87,7 @@ export interface VoiceState {
   callSid: string | null;
   items: TimelineItem[];
   error: string | null;
+  endReason: EndReason | null;
 }
 
 /** Microphone and speaker loudness, 0–1. Updated many times a second. */
@@ -95,4 +105,5 @@ export const INITIAL_STATE: VoiceState = {
   callSid: null,
   items: [],
   error: null,
+  endReason: null,
 };

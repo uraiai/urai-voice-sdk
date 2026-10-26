@@ -16,7 +16,7 @@ import {
 import { toVoiceEvent, type VoiceServerEvent } from "./headless/server-events";
 import { createStore, type Store } from "./headless/store";
 import { createIdSource, reduceTimeline, type TimelineEvent } from "./headless/timeline";
-import { INITIAL_STATE, type AudioLevels, type VoiceState } from "./headless/types";
+import { INITIAL_STATE, type AudioLevels, type EndReason, type VoiceState } from "./headless/types";
 import {
   parseServerMessage,
   PROTOCOL_VERSION,
@@ -112,6 +112,8 @@ interface Call {
   connectTimer: ReturnType<typeof setTimeout> | null;
   resolveStart: () => void;
   closed: boolean;
+  /** Set by `callEnded` so the socket close that follows reads as the agent's hang-up. */
+  serverEndReason: string | null;
 }
 
 export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
@@ -150,7 +152,7 @@ export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
   });
 
   /** Tears the call down and settles the store. Idempotent per call. */
-  const finish = (c: Call, error: string | null) => {
+  const finish = (c: Call, error: string | null, reason: EndReason = error ? "error" : "user") => {
     if (c.closed) return;
     c.closed = true;
     if (call === c) call = null;
@@ -176,13 +178,14 @@ export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
     store.set((s) => ({
       status: error ? "error" : "ended",
       error: error ?? s.error,
+      endReason: reason,
       agentSpeaking: false,
       userSpeaking: false,
     }));
     const s = store.getSnapshot();
     emitter.emit("status", { status: s.status, error: s.error });
     if (error) emitter.emit("error", { message: error });
-    emitter.emit("ended", { error });
+    emitter.emit("ended", { reason, error });
     c.resolveStart();
   };
 
@@ -337,6 +340,9 @@ export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
       case "usage":
         emitter.emit("usage", { stats: event.stats });
         break;
+      case "call-ended":
+        c.serverEndReason = event.reason;
+        break;
     }
   };
 
@@ -409,7 +415,8 @@ export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
     };
     ws.onclose = () => {
       const s = store.getSnapshot();
-      if (s.status === "connected") finish(c, null);
+      if (c.serverEndReason === "agent_hangup") finish(c, null, "agent");
+      else if (s.status === "connected") finish(c, null, "disconnected");
       else finish(c, s.error ?? "The connection closed before the call started.");
     };
   };
@@ -438,6 +445,7 @@ export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
         status: "idle",
         items: [],
         error: null,
+        endReason: null,
         callSid: null,
         agent: null,
         agentSpeaking: false,
@@ -457,6 +465,7 @@ export function createVoiceClient(options: VoiceClientOptions): VoiceClient {
           connectTimer: null,
           resolveStart: resolve,
           closed: false,
+          serverEndReason: null,
         };
         call = c;
         // Created synchronously, inside the user gesture, so it starts running.

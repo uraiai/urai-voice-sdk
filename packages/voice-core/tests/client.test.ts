@@ -109,7 +109,7 @@ describe("createVoiceClient", () => {
     const errors: string[] = [];
     s.client.on("error", (e) => errors.push(e.message));
     await s.client.start();
-    expect(s.state()).toMatchObject({ status: "error", error: "Microphone access was denied." });
+    expect(s.state()).toMatchObject({ status: "error", error: "Microphone access was denied.", endReason: "error" });
     expect(errors).toEqual(["Microphone access was denied."]);
     expect(s.fake.sockets).toHaveLength(0);
   });
@@ -216,14 +216,26 @@ describe("createVoiceClient", () => {
     expect(ws.closedByClient).toBe(true);
     expect(pc.closed).toBe(true);
     expect(pc.senders[0].track!.stopped).toBe(true);
-    expect(ended).toHaveBeenCalledWith({ error: null });
+    expect(ended).toHaveBeenCalledWith({ reason: "user", error: null });
+    expect(s.state().endReason).toBe("user");
   });
 
-  it("a server hang-up ends the call cleanly", async () => {
+  it("an agent hang-up (callEnded, then close) ends the call as the agent's", async () => {
+    const s = setup();
+    const { ws } = await connect(s);
+    const ended = vi.fn();
+    s.client.on("ended", ended);
+    ws.serverSend({ type: "callEnded", reason: "agent_hangup" });
+    ws.serverClose();
+    expect(s.state()).toMatchObject({ status: "ended", error: null, endReason: "agent" });
+    expect(ended).toHaveBeenCalledWith({ reason: "agent", error: null });
+  });
+
+  it("a close without callEnded reads as a disconnect", async () => {
     const s = setup();
     const { ws } = await connect(s);
     ws.serverClose();
-    expect(s.state()).toMatchObject({ status: "ended", error: null });
+    expect(s.state()).toMatchObject({ status: "ended", error: null, endReason: "disconnected" });
   });
 
   it("can start a fresh call after one ends", async () => {

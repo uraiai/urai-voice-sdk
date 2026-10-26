@@ -1,0 +1,53 @@
+{
+  "name": "@uraiai/voice-react",
+  "version": "0.0.0",
+  "description": "React provider and hooks for Urai voice calls",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p tsconfig.check.json"
+  },
+  "dependencies": {
+    "@uraiai/voice-core": "workspace:^"
+  },
+  "peerDependencies": {
+    "react": ">=18 <20"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^19.0.0",
+    "@uraiai/voice-test-support": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "urai",
+    "voice",
+    "webrtc",
+    "react"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uraiai/urai-voice-sdk",
+    "directory": "packages/voice-react"
+  }
+}
